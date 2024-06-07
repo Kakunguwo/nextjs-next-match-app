@@ -1,7 +1,6 @@
 'use client';
 
 import { signInUser } from '@/app/actions/authActions';
-import { signIn } from '@/auth';
 import { LoginSchema, loginSchema } from '@/lib/Schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react'
@@ -24,6 +23,7 @@ export default function LoginForm() {
 
         if(result.status === "success"){
             router.push('/members');
+            router.refresh();
         } else {
             toast.error(result.error as string);
         }

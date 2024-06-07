@@ -1,14 +1,12 @@
 'use server'
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { LoginSchema, loginSchema } from "@/lib/Schemas/loginSchema";
 import { prisma } from "@/lib/Schemas/prisma";
 import { RegisterSchema, registerSchema } from "@/lib/Schemas/registerSchema";
 import { ActionResult } from "@/types";
 import { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import exp from "constants";
-import jwt from "jsonwebtoken";
 import { AuthError } from "next-auth";
 
 
@@ -42,6 +40,11 @@ export const signInUser = async (data: LoginSchema): Promise<ActionResult<string
 }
 
 
+export async function signOutUser() {
+    await signOut({redirectTo: '/'})
+  }
+
+  
 export const registerUser = async (data: RegisterSchema): Promise<ActionResult<User>> => {
     try {
         const validated = registerSchema.safeParse(data);
