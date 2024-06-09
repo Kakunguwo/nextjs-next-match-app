@@ -8,20 +8,39 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
-  passwordHash String
+  passwordHash  String
   image         String?
   accounts      Account[]
+  member        Member?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
+model Member {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  name        String
+  gender      String
+  dateOfBirth DateTime
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
+  description String
+  city        String
+  country     String
+  image       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  photos Photo[]
+}
+
 model Account {
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
@@ -32,11 +51,20 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
+}
+
+model Photo {
+  id       String  @id @default(cuid())
+  url      String
+  publicId String?
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
