@@ -9,16 +9,13 @@ import React from 'react';
 
 type Props = {
     member: Member
+    navLinks: {name: string, href: string}[]
 }
 
-export default function MemberSidebar({ member }: Props) {
-    const baseURL = `/members/${member.userId}`;
+export default function MemberSidebar({ member, navLinks }: Props) {
+    
     const pathname = usePathname();
-    const navLinks = [
-        {name: 'Profile', href: `${baseURL}`},
-        {name: 'Photos', href: `${baseURL}/photos`},
-        {name: 'Chat', href: `${baseURL}/chat`},
-    ]
+    
     return (
         <Card className='w-full mt-10 items-center h-[80vh]'> 
             <Image 
@@ -26,7 +23,7 @@ export default function MemberSidebar({ member }: Props) {
                 width={100}
                 src={member.image || '/images/user.png'}
                 alt={member.name}
-                className='rounded-full mt-6 aspect-square object-cover'
+                className='rounded-full mt-4 aspect-square object-cover'
             />
             <CardBody >
                 <div className='flex flex-col items-center'>
@@ -38,7 +35,7 @@ export default function MemberSidebar({ member }: Props) {
                     </div>
                 </div>
                 <Divider className='my-3'/>
-                <nav className='flex flex-col p-4 ml-4 text-2xl gap-4'>
+                <nav className='flex flex-col p-4 ml-4 text-xl gap-4'>
                     {navLinks.map(link => (
                         <Link 
                             key={link.name}

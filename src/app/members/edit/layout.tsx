@@ -1,19 +1,21 @@
-import { getMemberByUserID } from '@/app/actions/memberActions'
 import React, { ReactNode } from 'react'
 import MemberSidebar from '../MemberSidebar';
 import { notFound } from 'next/navigation';
 import { Card } from '@nextui-org/react';
+import { getAuthId, getUserById } from '@/app/actions/authActions';
+import { getMemberByUserID } from '@/app/actions/memberActions';
 
-export default async function Layout({ children, params }: { children: ReactNode, params: { userId: string } }) {
-    const member = await getMemberByUserID(params.userId);
+export default async function Layout({ children}: { children: ReactNode }) {
+    const userId = await getAuthId();
+    const member = await getMemberByUserID(userId);
     if(!member) return notFound();
 
-    const baseURL = `/members/${member.userId}`;
+    const baseURL = `/members/edit`;
 
     const navLinks = [
-        {name: 'Profile', href: `${baseURL}`},
-        {name: 'Photos', href: `${baseURL}/photos`},
-        {name: 'Chat', href: `${baseURL}/chat`},
+        {name: 'Edit Profile', href: `${baseURL}`},
+        {name: 'Upload Photos', href: `${baseURL}/photos`},
+       
     ]
     return (
         <div className='grid grid-cols-12 gap-5 h-[80vh]'>

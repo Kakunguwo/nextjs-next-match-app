@@ -2,32 +2,33 @@
 
 import { registerUser } from '@/app/actions/authActions';
 import { RegisterSchema, registerSchema } from '@/lib/Schemas/registerSchema';
+import { handleFormServerErrors } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react'
+import { useRouter } from 'next/navigation';
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { GiPadlock } from 'react-icons/gi'
+import { toast } from 'react-toastify';
 
 export default function RegisterForm() {
     const {register, handleSubmit, setError, formState : {errors, isValid, isLoading, isSubmitting}} = useForm<RegisterSchema>({
-        // resolver : zodResolver(registerSchema),
+        resolver : zodResolver(registerSchema),
         mode : 'onTouched'
     });
+
+    const router = useRouter();
 
     const onSubmit = async (data: RegisterSchema) => {
         const result = await registerUser(data);
         
         if(result.status === "success"){
-            console.log("User registered successfully!");
+            toast.success("Registration Successful!");
+            router.push('/members');
+            router.refresh();
+
         } else {
-            if(Array.isArray(result.error)){
-                result.error.forEach(e => {
-                    const fieldName = e.path.join('.') as 'email' | 'name' | 'password';
-                    setError(fieldName, {message: e.message});
-                })
-            } else{
-                setError('root.serverError', {message: result.error});
-            }
+            handleFormServerErrors(result, setError);
         }
         
     }
